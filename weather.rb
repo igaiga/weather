@@ -5,9 +5,13 @@
 require 'open-uri'
 require 'nokogiri'
 require 'date'
-
 require 'awesome_print'
 require 'pry'
+
+# im-kayac
+require 'im-kayac'
+user = 'user'
+password = 'pass'
 
 def parse(xml)
   h ={}
@@ -32,6 +36,6 @@ xml = Nokogiri::XML(open(url).read)
 # xml = File.open("sample.xml") { |f| Nokogiri::XML(f) }
 
 h = parse xml
-p message h
+p ImKayac.post(user, message(h), {:password => password})
 
 
