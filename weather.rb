@@ -20,6 +20,10 @@ def parse(xml)
   h
 end
 
+def message(h)
+  "#{h[:date].month}月#{h[:date].day}日の天気:#{h[:telop]} 気温:#{h[:temperature_max]}℃/#{h[:temperature_min]}℃ #{h[:description]}"
+end
+
 url = 'http://weather.livedoor.com/forecast/webservice/rest/v1?city=63&day=today'
 # city = 63 : Tokyo
 # 地区ID: http://weather.livedoor.com/forecast/rss/forecastmap.xml
@@ -28,5 +32,6 @@ xml = Nokogiri::XML(open(url).read)
 # xml = File.open("sample.xml") { |f| Nokogiri::XML(f) }
 
 h = parse xml
-p h[:description]
+p message h
+
 
