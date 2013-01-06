@@ -10,8 +10,10 @@ require 'pry'
 
 # im-kayac
 require 'im-kayac'
-user = 'user'
-password = 'pass'
+require 'pit'
+config_im_kayac = Pit.get 'im-kayac'
+user = config_im_kayac['user']
+password = config_im_kayac['pass']
 
 def parse(xml)
   h ={}
