@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 # using Livedoor Weather Web Service / LWWS
-# http://weather.livedoor.com/weather_hacks/webservice.html
+# http://weather.livedoor.com/weather_hacks/webservice
 
 require 'open-uri'
-require 'nokogiri'
+require 'json'
 require 'date'
 require 'awesome_print'
 require 'pry'
+
 
 # im-kayac
 require 'im-kayac'
@@ -15,29 +16,27 @@ config_im_kayac = Pit.get 'im-kayac'
 user = config_im_kayac['user']
 password = config_im_kayac['pass']
 
-def parse(xml)
+def parse(json)
   h ={}
-  h[:telop] = xml.xpath("//telop").children.first.to_s
-  h[:temperature_max] = xml.xpath("//temperature//max//celsius").children.first.to_s
-  h[:temperature_min] = xml.xpath("//temperature//min//celsius").children.first.to_s
-  h[:description] = xml.xpath("//description").children.first.to_s
-  h[:date] = Date.parse(xml.xpath("//forecastdate").children.first.to_s)
-  h[:city] = xml.xpath("//location").attr('city').value.to_s
+  today_forecast = json["forecasts"].select{|day| day["dateLabel"] == '今日'}.first
+  h[:telop] = today_forecast["telop"]
+  h[:date] = today_forecast["date"]
+  h[:temperature_min] = today_forecast["temperature"]["min"]["celsius"] if today_forecast["temperature"]["min"]
+  h[:temperature_max] = today_forecast["temperature"]["max"]["celsius"] if today_forecast["temperature"]["max"]
   h
 end
 
 def message(h)
-  "#{h[:date].month}月#{h[:date].day}日の天気:#{h[:telop]} 気温:#{h[:temperature_max]}℃/#{h[:temperature_min]}℃ #{h[:description]}"
+  "#{h[:date]}の天気:#{h[:telop]} 気温:#{h[:temperature_max]}℃/#{h[:temperature_min]}℃"
 end
 
-url = 'http://weather.livedoor.com/forecast/webservice/rest/v1?city=63&day=today'
-# city = 63 : Tokyo
-# 地区ID: http://weather.livedoor.com/forecast/rss/forecastmap.xml
-xml = Nokogiri::XML(open(url).read)
-# for sample.xml
-# xml = File.open("sample.xml") { |f| Nokogiri::XML(f) }
+url = 'http://weather.livedoor.com/forecast/webservice/json/v1?city=130010'
+# city = 130010 : Tokyo
+# 地区ID: http://weather.livedoor.com/forecast/rss/primary_area.xml
+json_raw = open(url).read
+json = JSON.parse(json_raw)
+h = parse json
 
-h = parse xml
 p ImKayac.post(user, message(h), {:password => password})
 
 
