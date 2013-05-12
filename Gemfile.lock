@@ -7,7 +7,6 @@ GEM
       json
     json (1.7.6)
     method_source (0.8.1)
-    nokogiri (1.5.6)
     pit (0.0.7)
     pry (0.9.10)
       coderay (~> 1.0.5)
@@ -21,6 +20,5 @@ PLATFORMS
 DEPENDENCIES
   awesome_print
   im-kayac
-  nokogiri
   pit
   pry
