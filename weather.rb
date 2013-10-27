@@ -50,4 +50,4 @@ json_raw = open(url).read
 json = JSON.parse(json_raw)
 forecasts = parse(json)
 p message = forecasts.map{|e| decolate(e)}.map{|e| message_day(e)}.join("\n")
-p ImKayac.post(user, message, {:password => password})
+p ImKayac.to(user).password(password).post(message)
