@@ -18,7 +18,7 @@ password = config_im_kayac['pass']
 def parse_day_forecast(day_forecast)
   h = {}
   h[:telop] = day_forecast["telop"]
-  h[:date] = day_forecast["date"]
+  h[:date] = day_forecast["date"].split('-').last(2).join('/') # source:"2013-10-27"
   h[:temperature_min] = day_forecast["temperature"]["min"]["celsius"] if day_forecast["temperature"]["min"]
   h[:temperature_max] = day_forecast["temperature"]["max"]["celsius"] if day_forecast["temperature"]["max"]
   h
